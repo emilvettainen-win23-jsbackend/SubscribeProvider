@@ -46,7 +46,7 @@ namespace SubscribeProvider.Functions
                 var result = await _subscribeService.CreateSubscribeRequestAsync(model);
                 return result.StatusCode switch
                 {
-                    ResultStatus.OK => new CreatedResult(),
+                    ResultStatus.OK => new OkResult(),
                     ResultStatus.EXISTS => new ConflictResult(),
                     ResultStatus.ERROR => new BadRequestResult(),
                     _ => new StatusCodeResult(500)
