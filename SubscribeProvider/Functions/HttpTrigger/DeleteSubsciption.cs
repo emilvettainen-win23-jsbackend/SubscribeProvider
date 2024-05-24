@@ -38,15 +38,24 @@ namespace SubscribeProvider.Functions.HttpTrigger
                     if (modelState.IsValid)
                     {
                         var deleteResult = await _subscribeService.DeleteAsync(model.Email);
-                        if (deleteResult.StatusCode == ResultStatus.OK)
+                        switch (deleteResult.StatusCode)
                         {
-                            var emailRequest = _subscribeService.GenerateDeleteConfirmEmail(model.Email);
-                            if (emailRequest != null)
-                            {
-                                var sender = _serviceBusClient.CreateSender("email_request");
-                                await sender.SendMessageAsync(new ServiceBusMessage(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(emailRequest))));
-                                return new OkResult();
-                            }
+                            case ResultStatus.OK:
+                                var emailRequest = _subscribeService.GenerateDeleteConfirmEmail(model.Email);
+                                if (emailRequest != null)
+                                {
+                                    var sender = _serviceBusClient.CreateSender("email_request");
+                                    await sender.SendMessageAsync(new ServiceBusMessage(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(emailRequest))));
+                                    return new OkResult();
+                                }
+                                break;
+
+                            case ResultStatus.NOT_FOUND:
+                                return new NotFoundResult();
+
+                            default:
+                                return new StatusCodeResult(500);
+
                         }
                     }
                 }
