@@ -12,58 +12,66 @@ using System.Text;
 
 namespace SubscribeProvider.Functions.HttpTrigger
 {
-    public class CreateSubscription
+    public class CreateSubscription(ILogger<CreateSubscription> logger, ServiceBusClient serviceBusClient, SubscribeService subscribeService)
     {
-        private readonly ILogger<CreateSubscription> _logger;
-        private readonly SubscribeService _subscribeService;
-        private readonly ServiceBusClient _serviceBusClient;
-
-        public CreateSubscription(ILogger<CreateSubscription> logger, ServiceBusClient serviceBusClient, SubscribeService subscribeService)
-        {
-            _logger = logger;
-            _serviceBusClient = serviceBusClient;
-            _subscribeService = subscribeService;
-        }
+        private readonly ILogger<CreateSubscription> _logger = logger;
+        private readonly SubscribeService _subscribeService = subscribeService;
+        private readonly ServiceBusClient _serviceBusClient = serviceBusClient;
 
         [Function("CreateSubscription")]
         public async Task <IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post", Route="create")] HttpRequest req)
         {
             try
             {
-                var request = await new StreamReader(req.Body).ReadToEndAsync();
-                var model = JsonConvert.DeserializeObject<CreateSubscribeModel>(request);
-                if (model != null)
-                {
-                    var modelState = CustomValidation.ValidateModel(model);
-                    if (modelState.IsValid)
-                    {
-                        var createResult = await _subscribeService.CreateSubscribeRequestAsync(model);
-                        switch (createResult.StatusCode)
-                        {
-                            case ResultStatus.OK:
-                                var emailRequest = _subscribeService.GenerateSubscribeConfirmEmail(model.Email);
-                                if (emailRequest != null)
-                                {
-                                    var sender = _serviceBusClient.CreateSender("email_request");
-                                    await sender.SendMessageAsync(new ServiceBusMessage(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(emailRequest))));
-                                    return new OkResult();
-                                }
-                                break;
-                            case ResultStatus.EXISTS:
-                                return new ConflictResult();
+                var model = await ValidateRequestAsync(req);
+                if (model == null)
+                    return new BadRequestResult();
 
-                            default:
-                                return new BadRequestResult();
-                        }
-                    }
-                }
+                var createResult = await _subscribeService.CreateSubscribeRequestAsync(model);
+                return await HandleCreateResultAsync(createResult, model);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"ERROR : CreateSubscription.Run() :: {ex.Message}");
                 return new StatusCodeResult(500);
             }
-            return new BadRequestResult();
+        }
+
+        private async Task<CreateSubscribeModel> ValidateRequestAsync(HttpRequest req)
+        {
+            using var reader = new StreamReader(req.Body);
+            var requestBody = await reader.ReadToEndAsync();
+            var model = JsonConvert.DeserializeObject<CreateSubscribeModel>(requestBody);
+            if (model == null)
+            {
+                return null!;
+            }
+            var modelState = CustomValidation.ValidateModel(model);
+            return modelState.IsValid ? model : null!;
+        }
+
+
+        private async Task<IActionResult> HandleCreateResultAsync(ResponseResult result, CreateSubscribeModel model)
+        {
+            return result.StatusCode switch
+            {
+                ResultStatus.OK => await HandleSuccessfulCreateAsync(model.Email),
+                ResultStatus.EXISTS => new ConflictResult(),
+                _ => new BadRequestResult(),
+            };
+        }
+
+
+        private async Task<IActionResult> HandleSuccessfulCreateAsync(string email)
+        {
+            var emailRequest = _subscribeService.GenerateSubscribeConfirmEmail(email);
+            if (emailRequest == null) 
+            {
+                return new BadRequestResult();
+            }
+            var sender = _serviceBusClient.CreateSender("email_request");
+            await sender.SendMessageAsync(new ServiceBusMessage(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(emailRequest))));
+            return new OkResult();
         }
     }
 }
