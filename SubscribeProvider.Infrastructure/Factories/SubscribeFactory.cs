@@ -27,4 +27,27 @@ public class SubscribeFactory
             return null!;
         }
     }
+
+    public static SubscribeEntity Update(UpdateSubscribeModel model)
+    {
+        try
+        {
+            return new SubscribeEntity
+            {
+                Id = model.Id,
+                Email = model.Email,
+                DailyNewsletter = model.DailyNewsletter,
+                AdvertisingUpdates = model.AdvertisingUpdates,
+                WeenInReview = model.WeenInReview,
+                EventUpdates = model.EventUpdates,
+                StartupsWeekly = model.StartupsWeekly,
+                Podcasts = model.Podcasts
+            };
+        }
+        catch (Exception)
+        {
+
+            return null!;
+        }
+    }
 }

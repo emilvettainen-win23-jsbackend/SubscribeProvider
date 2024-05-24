@@ -22,9 +22,18 @@ public class SubscribeService
     }
 
 
-
+    public async Task<ResponseResult> GetAllSubscribersAsync()
+    {
+        var subscribers = await _subscribeRepository.GetAllAsync();
+        return subscribers.Any() ? ResponseFactory.Ok(subscribers) : ResponseFactory.NotFound();
+    }
 
     
+    public async Task<ResponseResult> UpdateSubscriberAsync(UpdateSubscribeModel model)
+    {
+        var result = await _subscribeRepository.UpdateSubscriptionAsync(x => x.Id == model.Id, SubscribeFactory.Update(model));
+        return result != null ? ResponseFactory.Ok(result) : ResponseFactory.NotFound();
+    }
 
 
     public async Task<ResponseResult> CreateSubscribeRequestAsync(CreateSubscribeModel model)
