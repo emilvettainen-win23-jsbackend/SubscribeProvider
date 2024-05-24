@@ -1,6 +1,7 @@
 using Azure.Messaging.ServiceBus;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SubscribeProvider.Infrastructure.Data.Contexts;
@@ -15,7 +16,7 @@ var host = new HostBuilder()
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
 
-        services.AddPooledDbContextFactory<SubscribeDataContext>(x => x.UseSqlServer(context.Configuration["AzureDb"]));
+        services.AddPooledDbContextFactory<SubscribeDataContext>(x => x.UseSqlServer(context.Configuration.GetConnectionString("AzureDb")));
         services.AddScoped<SubscribeService>();
         services.AddScoped<SubscribeRepository>();
         services.AddSingleton(new ServiceBusClient(context.Configuration["SERVICEBUS_CONNECTION"]));
