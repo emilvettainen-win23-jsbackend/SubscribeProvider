@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SubscribeProvider.Data.Entities;
+using SubscribeProvider.Infrastructure.Data.Entities;
 
-namespace SubscribeProvider.Data.Contexts;
+namespace SubscribeProvider.Infrastructure.Data.Contexts;
 
 public class SubscribeDataContext(DbContextOptions<SubscribeDataContext> options) : DbContext(options)
 {

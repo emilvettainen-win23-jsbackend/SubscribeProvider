@@ -1,7 +1,7 @@
-﻿using SubscribeProvider.Models;
+﻿using SubscribeProvider.Infrastructure.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace SubscribeProvider.Helpers.Validations;
+namespace SubscribeProvider.Infrastructure.Helpers.Validations;
 
 public class CustomValidation
 {

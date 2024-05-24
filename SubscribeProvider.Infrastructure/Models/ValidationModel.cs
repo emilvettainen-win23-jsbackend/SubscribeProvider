@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SubscribeProvider.Models;
+
+namespace SubscribeProvider.Infrastructure.Models;
 
 public class ValidationModel<T>
 {

@@ -1,4 +1,4 @@
-﻿namespace SubscribeProvider.Helpers.Responses;
+﻿namespace SubscribeProvider.Infrastructure.Helpers.Responses;
 
 public enum ResultStatus
 {

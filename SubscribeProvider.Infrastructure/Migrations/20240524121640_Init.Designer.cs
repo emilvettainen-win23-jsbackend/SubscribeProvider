@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SubscribeProvider.Data.Contexts;
+using SubscribeProvider.Infrastructure.Data.Contexts;
 
 #nullable disable
 
-namespace SubscribeProvider.Migrations
+namespace SubscribeProvider.Infrastructure.Migrations
 {
     [DbContext(typeof(SubscribeDataContext))]
-    [Migration("20240510153926_Init")]
+    [Migration("20240524121640_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -19,12 +19,12 @@ namespace SubscribeProvider.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SubscribeProvider.Data.Entities.SubscribeEntity", b =>
+            modelBuilder.Entity("SubscribeProvider.Infrastructure.Data.Entities.SubscribeEntity", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");

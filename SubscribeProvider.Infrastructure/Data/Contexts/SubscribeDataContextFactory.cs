@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace SubscribeProvider.Data.Contexts;
+namespace SubscribeProvider.Infrastructure.Data.Contexts;
 
 public class SubscribeDataContextFactory : IDesignTimeDbContextFactory<SubscribeDataContext>
 {

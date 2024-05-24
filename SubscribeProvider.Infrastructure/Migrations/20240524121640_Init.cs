@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace SubscribeProvider.Migrations
+namespace SubscribeProvider.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration

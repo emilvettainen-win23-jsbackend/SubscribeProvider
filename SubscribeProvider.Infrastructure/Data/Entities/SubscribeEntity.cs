@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SubscribeProvider.Data.Entities;
+namespace SubscribeProvider.Infrastructure.Data.Entities;
 
 public class SubscribeEntity
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
+
     [Required]
     public string Email { get; set; } = null!;
     public bool DailyNewsletter { get; set; }

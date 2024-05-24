@@ -14,12 +14,7 @@
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.16.4" />
     <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.21.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.ApplicationInsights" Version="1.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -36,5 +31,11 @@
   </ItemGroup>
   <ItemGroup>
     <Using Include="System.Threading.ExecutionContext" Alias="ExecutionContext" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Functions\QueueTrigger\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SubscribeProvider.Infrastructure\SubscribeProvider.Infrastructure.csproj" />
   </ItemGroup>
 </Project>
