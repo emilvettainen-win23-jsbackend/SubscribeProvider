@@ -12,7 +12,7 @@ namespace SubscribeProvider.Functions.HttpTrigger
         private readonly SubscribeService _subscribeService = subscribeService;
 
         [Function("GetSubscriber")]
-        public async Task <IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post", Route ="subscriber/{id}")] string id)
+        public async Task <IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route ="subscriber/{id}")] string id)
         {
             try
             {
