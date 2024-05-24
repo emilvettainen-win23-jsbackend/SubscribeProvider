@@ -38,15 +38,22 @@ namespace SubscribeProvider.Functions.HttpTrigger
                     if (modelState.IsValid)
                     {
                         var createResult = await _subscribeService.CreateSubscribeRequestAsync(model);
-                        if (createResult.StatusCode == ResultStatus.OK) 
+                        switch (createResult.StatusCode)
                         {
-                            var emailRequest = _subscribeService.GenerateSubscribeConfirmEmail(model.Email);
-                            if (emailRequest != null)
-                            {
-                                var sender = _serviceBusClient.CreateSender("email_request");
-                                await sender.SendMessageAsync(new ServiceBusMessage(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(emailRequest))));
-                                return new OkResult();
-                            }
+                            case ResultStatus.OK:
+                                var emailRequest = _subscribeService.GenerateSubscribeConfirmEmail(model.Email);
+                                if (emailRequest != null)
+                                {
+                                    var sender = _serviceBusClient.CreateSender("email_request");
+                                    await sender.SendMessageAsync(new ServiceBusMessage(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(emailRequest))));
+                                    return new OkResult();
+                                }
+                                break;
+                            case ResultStatus.EXISTS:
+                                return new ConflictResult();
+
+                            default:
+                                return new BadRequestResult();
                         }
                     }
                 }
