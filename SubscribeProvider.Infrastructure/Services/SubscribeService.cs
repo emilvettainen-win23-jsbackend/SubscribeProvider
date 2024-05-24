@@ -21,6 +21,11 @@ public class SubscribeService
         _serviceBusClient = serviceBusClient;
     }
 
+    public async Task<ResponseResult> GetOneSubsciberAsync(string id)
+    {
+        var result = await _subscribeRepository.GetOneAsync(x => x.Id == id);
+        return result != null ? ResponseFactory.Ok(result) : ResponseFactory.NotFound();
+    }
 
     public async Task<ResponseResult> GetAllSubscribersAsync()
     {
